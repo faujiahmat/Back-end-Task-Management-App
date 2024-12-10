@@ -1,6 +1,6 @@
 import prisma from '../db';
 import { Response } from 'express';
-import { CustomRequest } from 'src/middleware/authentication';
+import { CustomRequest } from '../middleware/authentication';
 
 export const getTasksAndCategoriesByUser = async (
   req: CustomRequest,
