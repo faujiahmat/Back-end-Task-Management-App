@@ -1,23 +1,39 @@
-import { Request, Response } from 'express';
-import prisma from '../db';
-import { CustomRequest } from '../middleware/authentication';
-import bcrypt from 'bcrypt';
-export const userControllerFindMany = async (_req: Request, res: Response) => {
+import { NextFunction, Request, Response } from 'express'
+import prisma from '../db'
+import { CustomRequest } from '../middleware/authentication'
+import bcrypt from 'bcrypt'
+export const userControllerFindMany = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const users = await prisma.user.findMany();
-    return res.status(200).send(users);
-  } catch (error) {
-    return res.status(500).send({ message: error });
+    const users = await prisma.user.findMany()
+    res.status(200).json({ statusCode: 200, error: null, message: null, users })
+    return
+  } catch (error: Error | any) {
+    next(
+      new Error(
+        'Error at src/controllers/user.controller.ts: userControllerFindMany => ' +
+          error.message
+      )
+    )
   }
-};
+}
 
-export const getUserProfile = async (req: CustomRequest, res: Response) => {
+export const getUserProfile = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    console.log(req.user);
-    const userId = req.user?.id;
+    const userId = req.user?.id
 
     if (!userId) {
-      return res.status(400).json({ message: 'User ID is missing' });
+      res
+        .status(400)
+        .json({ statusCode: 400, error: null, message: 'User ID is missing' })
+      return
     }
 
     const user = await prisma.user.findUnique({
@@ -25,88 +41,122 @@ export const getUserProfile = async (req: CustomRequest, res: Response) => {
       select: {
         id: true,
         username: true,
-        email: true,
-      },
-    });
+        email: true
+      }
+    })
 
     if (!user) {
-      return res.status(404).send({ message: 'User not found' });
+      res
+        .status(404)
+        .json({ statusCode: 404, error: null, message: 'User not found' })
+      return
     }
 
-    return res.status(200).send(user);
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-    });
+    res.status(200).json({
+      statusCode: 200,
+      error: null,
+      message: null,
+      user
+    })
+    return
+  } catch (error: Error | any) {
+    next(
+      new Error(
+        'Error at src/controllers/user.controller.ts: getUserProfile => ' +
+          error.message
+      )
+    )
   }
-};
+}
 
-export const updateUserProfile = async (req: CustomRequest, res: Response) => {
+export const updateUserProfile = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password } = req.body
     if (!username || !email || !password) {
       res.status(400).json({
-        message: 'Username, email, and password are required.',
-      });
-      return;
+        statusCode: 400,
+        error: null,
+        message: 'Username, email, and password are required.'
+      })
+      return
     }
 
-    const hashPassword = bcrypt.hashSync(password, 8);
+    const hashPassword = bcrypt.hashSync(password, 8)
 
     const existUserByUsername = await prisma.user.findUnique({
       where: {
-        username: String(username),
-      },
-    });
+        username: String(username)
+      }
+    })
 
     const existUserByEmail = await prisma.user.findUnique({
       where: {
-        email: String(email),
-      },
-    });
+        email: String(email)
+      }
+    })
 
     if (existUserByEmail || existUserByUsername) {
-      res.status(401).json({ message: 'Username or Email already used.' });
-      return;
+      res.status(401).json({
+        statusCode: 401,
+        error: null,
+        message: 'Username or Email already used.'
+      })
+      return
     }
 
     const update = await prisma.user.update({
       where: {
-        id: req.user?.id,
+        id: req.user?.id
       },
       data: {
         username: String(username),
         email: String(email),
-        password: hashPassword,
-      },
-    });
+        password: hashPassword
+      }
+    })
 
-    res.status(201).send({
+    res.status(201).json({
+      statusCode: 201,
+      error: null,
       message: 'user updated',
-      data: update,
-    });
-    return;
-  } catch (error) {
-    res.status(500).send({ message: error });
+      data: update
+    })
+    return
+  } catch (error: Error | any) {
+    next(
+      new Error(
+        'Error at src/controller/user.controller.ts: updateUserProfile => ' +
+          error.message
+      )
+    )
   }
-};
+}
 
-export const deleteUser = async (req: CustomRequest, res: Response) => {
+export const deleteUser = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const deleted = await prisma.user.delete({
       where: {
-        id: req.user?.id,
-      },
-    });
+        id: req.user?.id
+      }
+    })
 
-    res.status(201).send({
-      message: `user ${deleted.username} deleted`,
-    });
-    return;
-  } catch (error) {
-    res.status(500).send({ message: 'Internal server error' });
-    return;
+    res.status(201).json({
+      statusCode: 201,
+      error: null,
+      message: `user ${deleted.username} deleted`
+    })
+    return
+  } catch (error: Error | any) {
+    next(
+      new Error('Error at src/controllers/user.controller.ts: deleteUser => ')
+    ) + error.message
   }
-};
+}

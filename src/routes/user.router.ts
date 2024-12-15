@@ -1,29 +1,27 @@
-import express from 'express';
+import express from 'express'
 import {
   deleteUser,
   getUserProfile,
   updateUserProfile,
-  userControllerFindMany,
+  userControllerFindMany
   // userControllerFindUnique,
-} from '../controllers/user.controller';
-import { authenticateToken } from '../middleware/authentication';
-import { registerValidator } from '../middleware/validator';
+} from '../controllers/user.controller'
+import { authenticateToken } from '../middleware/authentication'
+import { registerValidator } from '../middleware/validator'
 
-const userRouter = express.Router();
+const userRouter = express.Router()
 
-userRouter.get('/', userControllerFindMany);
+userRouter.get('/', userControllerFindMany)
 
-
-userRouter.get('/profile', authenticateToken, getUserProfile);
+userRouter.get('/profile', authenticateToken, getUserProfile)
 
 userRouter.put(
   '/profile',
   authenticateToken,
   registerValidator,
   updateUserProfile
-);
+)
 
+userRouter.delete('/profile', authenticateToken, deleteUser)
 
-userRouter.delete('/profile', authenticateToken, deleteUser);
-
-export default userRouter;
+export default userRouter

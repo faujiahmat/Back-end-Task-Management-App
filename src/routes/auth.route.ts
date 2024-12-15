@@ -1,11 +1,11 @@
-import express from 'express';
-import { login, register } from '../controllers/auth.controller';
-import { registerValidator } from '../middleware/validator';
+import express from 'express'
+import { login, register } from '../controllers/auth.controller'
+import { registerValidator } from '../middleware/validator'
 
-const authRouter = express.Router();
+const authRouter = express.Router()
 
-authRouter.post('/login', login);
+authRouter.post('/login', login)
 
-authRouter.post('/register', registerValidator, register);
+authRouter.post('/register', registerValidator, register)
 
-export default authRouter;
+export default authRouter

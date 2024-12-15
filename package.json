@@ -4,19 +4,36 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon src/index.ts",
-    "build": "tsc"
+    "start": "npx tsc -w",
+    "dev": "npx nodemon",
+    "lint": "npx eslint ./src",
+    "lint:fix": "npx eslint ./src --fix",
+    "build": "tsc && cp .env ./build/.env",
+    "prod": "node ./build/index.js",
+    "format": "npx prettier . --write",
+    "prepare": "husky",
+    "check-types": "npx tsc --noEmit --pretty",
+    "check-lint": "npx eslint ./src --config eslint.config.js",
+    "check-format": "npx prettier . --check",
+    "test": "npx jest --detectOpenHandles"
   },
   "author": "faujiahmat",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "^9.16.0",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "latest",
     "@types/express": "latest",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "latest",
     "@types/validator": "^13.12.1",
-    "nodemon": "latest",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^9.16.0",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.7",
+    "prettier": "3.4.2",
+    "pretty-quick": "^4.0.0",
     "prisma": "^5.18.0"
   },
   "dependencies": {
@@ -30,5 +47,12 @@
     "typescript": "latest",
     "validator": "^13.12.0"
   },
-  "devDependencies.@types/dotenv": "latest"
+  "husky": {
+    "hooks": {
+      "pre-commit": "npx pretty-quick --staged ng lint ng test",
+      "pre-push": "ng build --aot true"
+    }
+  },
+  "type": "module"
+
 }
