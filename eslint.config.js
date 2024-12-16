@@ -1,11 +1,11 @@
-import eslintRecommended from '@eslint/js'
-import typescriptPlugin from '@typescript-eslint/eslint-plugin';
-import typescriptParser from '@typescript-eslint/parser'
+const eslintRecommended = require('@eslint/js');
+const typescriptPlugin = require('@typescript-eslint/eslint-plugin');
+const typescriptParser = require('@typescript-eslint/parser')
 
-export default [
+module.exports [
   eslintRecommended.configs.recommended,
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    files: ['**/*.ts'],
     plugins: {
       '@typescript-eslint': typescriptPlugin
     },
@@ -19,7 +19,7 @@ export default [
         node: true
       }
     },
-    ignores: ['node_modules/**/*',"**/build/**/*"],
+    ignores: ['node_modules/**/*',"/build/**/*"],
 
     rules: {
   },
