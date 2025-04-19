@@ -10,9 +10,12 @@ export const getTasksAndCategoriesByUser = async (
   const userId = req.user?.id // Mengambil userId dari token/session yang sudah terautentikasi
 
   if (!userId) {
-    res
-      .status(401)
-      .json({ statusCode: 401, error: null, message: 'User not authenticated' })
+    res.status(401).json({
+      statusCode: 401,
+      message: 'User not authenticated',
+      data: null,
+      error: 'forbidden'
+    })
     return
   }
 
@@ -44,9 +47,9 @@ export const getTasksAndCategoriesByUser = async (
 
     res.status(200).json({
       statusCode: 200,
-      error: null,
       message: 'request success',
-      data: result
+      data: result,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -68,8 +71,9 @@ export const createTaskCategory = async (
   if (!userId) {
     res.status(401).json({
       statusCode: 401,
-      error: null,
-      message: 'User not authenticated'
+      message: 'User not authenticated',
+      data: null,
+      error: 'forbidden'
     })
     return
   }
@@ -79,8 +83,9 @@ export const createTaskCategory = async (
   if (!taskId || !categoryId) {
     res.status(400).json({
       statusCode: 400,
-      error: null,
-      message: 'Task ID and Category ID are required'
+      message: 'Task ID and Category ID are required',
+      data: null,
+      error: 'Unauthorized'
     })
     return
   }
@@ -98,8 +103,9 @@ export const createTaskCategory = async (
     if (!task || !category) {
       res.status(404).json({
         statusCode: 404,
-        error: null,
-        message: 'Task or Category not found for this user'
+        message: 'Task or Category not found for this user',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -113,7 +119,10 @@ export const createTaskCategory = async (
     })
 
     res.status(201).json({
-      data: taskCategory
+      statusCode: 201,
+      message: 'TaskCategory created successfully',
+      data: taskCategory,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -148,8 +157,9 @@ export const getCategoriesByTaskId = async (
     if (taskCategories.length === 0) {
       res.status(404).json({
         statusCode: 404,
-        error: null,
-        message: 'No categories found for this task'
+        message: 'No categories found for this task',
+        data: null,
+        error: null
       })
       return
     }
@@ -161,12 +171,13 @@ export const getCategoriesByTaskId = async (
 
     res.status(200).json({
       statusCode: 200,
-      error: null,
-      message: {
+      message: 'Request success',
+      data: {
         taskId,
         taskName,
         categories
-      }
+      },
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -200,8 +211,9 @@ export const getTasksByCategoryId = async (
     if (taskCategories.length === 0) {
       res.status(404).json({
         statusCode: 404,
-        error: null,
-        message: 'No tasks found for this category'
+        message: 'No tasks found for this category',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -214,11 +226,12 @@ export const getTasksByCategoryId = async (
 
     res.status(200).json({
       statusCode: 200,
-      error: null,
-      message: {
+      message: 'Task found successfully',
+      data: {
         categoryId,
         tasks
-      }
+      },
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -248,14 +261,15 @@ export const deleteTaskCategory = async (
     if (!taskCategory) {
       res.status(404).json({
         statusCode: 404,
-        error: null,
-        message: 'TaskCategory not found'
+        message: 'TaskCategory not found',
+        data: null,
+        error: 'Not found'
       })
       return
     }
 
     // Hapus taskCategory berdasarkan ID
-    await prisma.taskCategory.delete({
+    const deletedTaskCategory = await prisma.taskCategory.delete({
       where: {
         id: parseInt(id, 10)
       }
@@ -263,8 +277,9 @@ export const deleteTaskCategory = async (
 
     res.status(200).json({
       statusCode: 200,
-      error: null,
-      message: 'TaskCategory deleted successfully'
+      message: 'TaskCategory deleted successfully',
+      data: deletedTaskCategory,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -295,8 +310,9 @@ export const updateTaskCategory = async (
     if (!taskCategory) {
       res.status(404).json({
         statusCode: 404,
-        error: null,
-        message: 'TaskCategory not found'
+        message: 'TaskCategory not found',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -314,9 +330,9 @@ export const updateTaskCategory = async (
 
     res.status(200).json({
       statusCode: 200,
-      error: null,
       message: 'TaskCategory updated successfully',
-      updatedTaskCategory
+      data: updatedTaskCategory,
+      error: null
     })
   } catch (error: Error | any) {
     next(

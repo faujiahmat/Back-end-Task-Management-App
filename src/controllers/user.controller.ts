@@ -9,7 +9,12 @@ export const userControllerFindMany = async (
 ) => {
   try {
     const users = await prisma.user.findMany()
-    res.status(200).json({ statusCode: 200, error: null, message: null, users })
+    res.status(200).json({
+      statusCode: 200,
+      message: 'Success fetching users',
+      data: users,
+      error: null
+    })
     return
   } catch (error: Error | any) {
     next(
@@ -30,9 +35,12 @@ export const getUserProfile = async (
     const userId = req.user?.id
 
     if (!userId) {
-      res
-        .status(400)
-        .json({ statusCode: 400, error: null, message: 'User ID is missing' })
+      res.status(400).json({
+        statusCode: 400,
+        message: 'User ID is missing',
+        data: null,
+        error: 'User ID is missing'
+      })
       return
     }
 
@@ -46,17 +54,20 @@ export const getUserProfile = async (
     })
 
     if (!user) {
-      res
-        .status(404)
-        .json({ statusCode: 404, error: null, message: 'User not found' })
+      res.status(404).json({
+        statusCode: 404,
+        message: 'User not found',
+        data: null,
+        error: 'Not found'
+      })
       return
     }
 
     res.status(200).json({
       statusCode: 200,
-      error: null,
       message: null,
-      user
+      data: user,
+      error: null
     })
     return
   } catch (error: Error | any) {
@@ -79,8 +90,9 @@ export const updateUserProfile = async (
     if (!username || !email || !password) {
       res.status(400).json({
         statusCode: 400,
-        error: null,
-        message: 'Username, email, and password are required.'
+        message: 'Username, email, and password are required.',
+        data: null,
+        error: 'Username, email, and password are required.'
       })
       return
     }
@@ -102,8 +114,9 @@ export const updateUserProfile = async (
     if (existUserByEmail || existUserByUsername) {
       res.status(401).json({
         statusCode: 401,
-        error: null,
-        message: 'Username or Email already used.'
+        message: 'Username or Email already used.',
+        data: null,
+        error: 'Username or Email already used.'
       })
       return
     }
@@ -121,9 +134,9 @@ export const updateUserProfile = async (
 
     res.status(201).json({
       statusCode: 201,
-      error: null,
-      message: 'user updated',
-      data: update
+      message: 'User updated',
+      data: update,
+      error: null
     })
     return
   } catch (error: Error | any) {
@@ -150,8 +163,9 @@ export const deleteUser = async (
 
     res.status(201).json({
       statusCode: 201,
-      error: null,
-      message: `user ${deleted.username} deleted`
+      message: `user ${deleted.username} deleted`,
+      data: deleted,
+      error: null
     })
     return
   } catch (error: Error | any) {

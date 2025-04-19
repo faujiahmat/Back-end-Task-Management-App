@@ -3,6 +3,7 @@ import prisma from '../db'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import process from 'process'
+import validator from 'validator'
 
 export const login = async (
   req: Request,
@@ -23,8 +24,9 @@ export const login = async (
     if (!user || !isPasswordValid) {
       return res.status(401).send({
         statusCode: 401,
-        error: null,
-        message: 'Invalid username or password'
+        message: 'Invalid username or password',
+        data: null,
+        error: 'Invalid username or password'
       })
     }
 
@@ -40,10 +42,9 @@ export const login = async (
 
     return res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Login success',
-      data: user.username,
-      token
+      data: { ...user, token },
+      error: null
     })
   } catch (error: Error | any) {
     return next(
@@ -79,8 +80,38 @@ export const register = async (
     if (existUserByEmail || existUserByUsername) {
       return res.status(401).json({
         statusCode: 401,
-        error: null,
-        message: 'Username or Email already used.'
+        message: 'Username or Email already used.',
+        data: null,
+        error: 'Username or Email already used.'
+      })
+    }
+
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        statusCode: 400,
+        message: 'Username, email, and password are required.',
+        data: null,
+        error: 'Username, email, and password are required.'
+      })
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({
+        statusCode: 400,
+        message: 'invalid email address',
+        data: null,
+        error: 'invalid email address'
+      })
+    }
+
+    if (!validator.isStrongPassword(password)) {
+      return res.status(400).json({
+        statusCode: 400,
+        message:
+          'password not strong. Password must be minimum 8 Character and include lowercase, uppercase, numbers, symbols',
+        data: null,
+        error:
+          'password not strong. Password must be minimum 8 Character and include lowercase, uppercase, numbers, symbols'
       })
     }
     const result = await prisma.user.create({
@@ -93,9 +124,9 @@ export const register = async (
 
     return res.json({
       statusCode: 200,
-      error: null,
       message: 'Register success',
-      data: result
+      data: result,
+      error: null
     })
   } catch (error: Error | any) {
     return next(

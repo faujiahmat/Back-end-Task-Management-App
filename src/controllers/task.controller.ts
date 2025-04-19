@@ -17,8 +17,9 @@ export const createTask = async (
     if (!title || !dueDate) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Missing required fields'
+        message: 'Missing required fields',
+        data: null,
+        error: 'Title and dueDate are required'
       })
       return
     }
@@ -26,9 +27,12 @@ export const createTask = async (
     // Validate status
     const validStatuses = ['PENDING', 'IN_PROGRESS', 'COMPLETED']
     if (!validStatuses.includes(status)) {
-      res
-        .status(400)
-        .send({ statusCode: 400, error: null, message: 'Invalid status value' })
+      res.status(400).send({
+        statusCode: 400,
+        message: 'Invalid status value',
+        data: null,
+        error: 'Allowed values: PENDING, IN_PROGRESS, COMPLETED'
+      })
       return
     }
 
@@ -37,17 +41,21 @@ export const createTask = async (
     if (!validPriorities.includes(priority)) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid priority value'
+        message: 'Invalid priority value',
+        data: null,
+        error: 'Allowed values: LOW, MEDIUM, HIGH'
       })
       return
     }
 
     const userId = req.user?.id
     if (!userId) {
-      res
-        .status(400)
-        .send({ statusCode: 400, error: null, message: 'User ID is required' })
+      res.status(400).send({
+        statusCode: 400,
+        message: 'User ID is required',
+        data: null,
+        error: 'Forbidden'
+      })
       return
     }
 
@@ -64,9 +72,9 @@ export const createTask = async (
 
     res.status(201).send({
       statusCode: 201,
-      error: null,
       message: 'Task created',
-      data: task
+      data: task,
+      error: null
     })
     return
   } catch (error: Error | any) {
@@ -106,9 +114,10 @@ export const getAllTasks = async (
       if (!validStatuses.includes(status as string)) {
         res.status(400).send({
           statusCode: 400,
-          error: null,
           message:
-            'Invalid status value. Allowed values: PENDING, IN_PROGRESS, COMPLETED'
+            'Invalid status value. Allowed values: PENDING, IN_PROGRESS, COMPLETED',
+          data: null,
+          error: 'Invalid status value'
         })
         return
       }
@@ -121,8 +130,9 @@ export const getAllTasks = async (
       if (!validPriorities.includes(priority as string)) {
         res.status(400).send({
           statusCode: 400,
-          error: null,
-          message: 'Invalid priority value. Allowed values: LOW, MEDIUM, HIGH'
+          message: 'Invalid priority value. Allowed values: LOW, MEDIUM, HIGH',
+          data: null,
+          error: 'Invalid priority value'
         })
         return
       }
@@ -135,8 +145,9 @@ export const getAllTasks = async (
       if (isNaN(dueDateObj.getTime())) {
         res.status(400).send({
           statusCode: 400,
-          error: null,
-          message: 'Invalid dueDate value. Please provide a valid date.'
+          message: 'Invalid dueDate value. Please provide a valid date.',
+          data: null,
+          error: 'Invalid dueDate value'
         })
         return
       }
@@ -151,8 +162,9 @@ export const getAllTasks = async (
         if (isNaN(fromDateObj.getTime())) {
           res.status(400).send({
             statusCode: 400,
-            error: null,
-            message: 'Invalid fromDate value. Please provide a valid date.'
+            message: 'Invalid fromDate value. Please provide a valid date.',
+            data: null,
+            error: 'Invalid fromDate value'
           })
           return
         }
@@ -163,8 +175,9 @@ export const getAllTasks = async (
         if (isNaN(toDateObj.getTime())) {
           res.status(400).send({
             statusCode: 400,
-            error: null,
-            message: 'Invalid toDate value. Please provide a valid date.'
+            message: 'Invalid toDate value. Please provide a valid date.',
+            data: null,
+            error: 'Invalid toDate value'
           })
           return
         }
@@ -179,8 +192,9 @@ export const getAllTasks = async (
       if (isNaN(beforeDateObj.getTime())) {
         res.status(400).send({
           statusCode: 400,
-          error: null,
-          message: 'Invalid beforeDate value. Please provide a valid date.'
+          message: 'Invalid beforeDate value. Please provide a valid date.',
+          data: null,
+          error: 'Invalid beforeDate value'
         })
         return
       }
@@ -193,8 +207,9 @@ export const getAllTasks = async (
       if (isNaN(afterDateObj.getTime())) {
         res.status(400).send({
           statusCode: 400,
-          error: null,
-          message: 'Invalid afterDate value. Please provide a valid date.'
+          message: 'Invalid afterDate value. Please provide a valid date.',
+          data: null,
+          error: 'Invalid afterDate value'
         })
         return
       }
@@ -209,17 +224,18 @@ export const getAllTasks = async (
     if (tasks.length === 0) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'No tasks found matching the given filters.'
+        message: 'No tasks found matching the given filters.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
 
     res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Tasks retrieved',
-      data: tasks
+      data: tasks,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -242,8 +258,9 @@ export const getTaskById = async (
     if (!taskId) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid taskId format. It must be a number.'
+        message: 'Invalid taskId format. It must be a number.',
+        data: null,
+        error: 'Invalid taskId format'
       })
       return
     }
@@ -259,8 +276,9 @@ export const getTaskById = async (
     if (!task) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'Task not found or not accessible.'
+        message: 'Task not found or not accessible.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -268,9 +286,9 @@ export const getTaskById = async (
     // Send the task details
     res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Task retrieved successfully',
-      data: task
+      data: task,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -295,8 +313,9 @@ export const updateTask = async (
     if (!taskId || isNaN(Number(taskId))) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid taskId format. It must be a number.'
+        message: 'Invalid taskId format. It must be a number.',
+        data: null,
+        error: 'Invalid taskId format'
       })
       return
     }
@@ -312,8 +331,9 @@ export const updateTask = async (
     if (!existingTask) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'Task not found or not accessible.'
+        message: 'Task not found or not accessible.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -335,9 +355,9 @@ export const updateTask = async (
     // Send the updated task details
     res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Task updated successfully',
-      data: updatedTask
+      data: updatedTask,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -361,8 +381,9 @@ export const deleteTask = async (
     if (!taskId || isNaN(Number(taskId))) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid taskId format. It must be a number.'
+        message: 'Invalid taskId format. It must be a number.',
+        data: null,
+        error: 'Invalid taskId format'
       })
       return
     }
@@ -378,14 +399,15 @@ export const deleteTask = async (
     if (!existingTask) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'Task not found or not accessible.'
+        message: 'Task not found or not accessible.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
 
     // Delete the task
-    await prisma.task.delete({
+    const deletedTask = await prisma.task.delete({
       where: {
         id: Number(taskId)
       }
@@ -394,8 +416,9 @@ export const deleteTask = async (
     // Send confirmation of deletion
     res.status(200).send({
       statusCode: 200,
-      error: null,
-      message: 'Task deleted successfully'
+      message: 'Task deleted successfully',
+      data: deletedTask,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -420,8 +443,9 @@ export const changeTaskStatus = async (
     if (!taskId || isNaN(Number(taskId))) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid taskId format. It must be a number.'
+        message: 'Invalid taskId format. It must be a number.',
+        data: null,
+        error: 'Invalid taskId format'
       })
       return
     }
@@ -431,9 +455,10 @@ export const changeTaskStatus = async (
     if (!status || !validStatuses.includes(status)) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
         message:
-          'Invalid status. Allowed values are: PENDING, IN_PROGRESS, COMPLETED.'
+          'Invalid status. Allowed values are: PENDING, IN_PROGRESS, COMPLETED.',
+        data: null,
+        error: 'Invalid status'
       })
       return
     }
@@ -449,8 +474,9 @@ export const changeTaskStatus = async (
     if (!existingTask) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'Task not found or not accessible.'
+        message: 'Task not found or not accessible.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -468,9 +494,9 @@ export const changeTaskStatus = async (
     // Send the updated task details
     res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Task status updated successfully',
-      data: updatedTask
+      data: updatedTask,
+      error: null
     })
   } catch (error: Error | any) {
     next(

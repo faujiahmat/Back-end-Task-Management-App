@@ -15,7 +15,8 @@
     "check-types": "npx tsc --noEmit --pretty",
     "check-lint": "npx eslint .",
     "check-format": "npx prettier . --check",
-    "test": "npx jest --detectOpenHandles"
+    "test": "npx jest --detectOpenHandles",
+    "migrate": "npx prisma migrate dev"
   },
   "author": "faujiahmat",
   "license": "MIT",

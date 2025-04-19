@@ -15,8 +15,9 @@ export const createCategory = async (
     if (!name || typeof name !== 'string' || name.trim() === '') {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid category name. It must be a non-empty string.'
+        message: 'Invalid category name. It must be a non-empty string.',
+        data: null,
+        error: 'Invalid category name'
       })
       return
     }
@@ -31,8 +32,9 @@ export const createCategory = async (
     if (existingCategory) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Category with this name already exists.'
+        message: 'Category with this name already exists.',
+        data: null,
+        error: 'Category already exists'
       })
       return
     }
@@ -52,9 +54,9 @@ export const createCategory = async (
     // Send the created category details
     res.status(201).send({
       statusCode: 201,
-      error: null,
       message: 'Category created successfully',
-      data: newCategory
+      data: newCategory,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -76,8 +78,9 @@ export const getAllCategories = async (
     if (!req.user || !req.user?.id) {
       res.status(401).send({
         statusCode: 401,
-        error: null,
-        message: 'Unauthorized. Please log in.'
+        message: 'Unauthorized. Please log in.',
+        data: null,
+        error: 'Unauthorized'
       })
       return
     }
@@ -93,8 +96,9 @@ export const getAllCategories = async (
     if (categories.length === 0) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'No categories found for this user.'
+        message: 'No categories found for this user.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -102,9 +106,9 @@ export const getAllCategories = async (
     // Send the list of categories
     res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Categories retrieved successfully',
-      data: categories
+      data: categories,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -129,8 +133,9 @@ export const getCategoryById = async (
     if (isNaN(parsedCategoryId)) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid categoryId format. It must be a number.'
+        message: 'Invalid categoryId format. It must be a number.',
+        data: null,
+        error: 'Invalid categoryId format'
       })
       return
     }
@@ -139,8 +144,9 @@ export const getCategoryById = async (
     if (!req.user || !req.user.id) {
       res.status(401).send({
         statusCode: 401,
-        error: null,
-        message: 'Unauthorized. Please log in.'
+        message: 'Unauthorized. Please log in.',
+        data: null,
+        error: 'Unauthorized'
       })
       return
     }
@@ -157,8 +163,9 @@ export const getCategoryById = async (
     if (!category) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'Category not found or does not belong to this user.'
+        message: 'Category not found or does not belong to this user.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -166,9 +173,9 @@ export const getCategoryById = async (
     // Return the category details
     res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Category retrieved successfully',
-      data: category
+      data: category,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -194,8 +201,9 @@ export const updateCategory = async (
     if (isNaN(parsedCategoryId)) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid categoryId format. It must be a number.'
+        message: 'Invalid categoryId format. It must be a number.',
+        data: null,
+        error: 'Invalid categoryId format'
       })
       return
     }
@@ -204,8 +212,9 @@ export const updateCategory = async (
     if (!req.user || !req.user.id) {
       res.status(401).send({
         statusCode: 401,
-        error: null,
-        message: 'Unauthorized. Please log in.'
+        message: 'Unauthorized. Please log in.',
+        data: null,
+        error: 'Unauthorized'
       })
       return
     }
@@ -214,8 +223,9 @@ export const updateCategory = async (
     if (name && (typeof name !== 'string' || name.trim() === '')) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid name. It must be a non-empty string.'
+        message: 'Invalid name. It must be a non-empty string.',
+        data: null,
+        error: 'Invalid name'
       })
       return
     }
@@ -231,8 +241,9 @@ export const updateCategory = async (
     if (!category) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'Category not found or does not belong to this user.'
+        message: 'Category not found or does not belong to this user.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
@@ -250,9 +261,9 @@ export const updateCategory = async (
     // Return the updated category details
     res.status(200).send({
       statusCode: 200,
-      error: null,
       message: 'Category updated successfully',
-      data: updatedCategory
+      data: updatedCategory,
+      error: null
     })
   } catch (error: Error | any) {
     next(
@@ -277,8 +288,9 @@ export const deleteCategory = async (
     if (isNaN(parsedCategoryId)) {
       res.status(400).send({
         statusCode: 400,
-        error: null,
-        message: 'Invalid categoryId format. It must be a number.'
+        message: 'Invalid categoryId format. It must be a number.',
+        data: null,
+        error: 'Invalid categoryId format'
       })
       return
     }
@@ -287,8 +299,9 @@ export const deleteCategory = async (
     if (!req.user || !req.user.id) {
       res.status(401).send({
         stattusCode: 401,
-        error: null,
-        message: 'Unauthorized. Please log in.'
+        message: 'Unauthorized. Please log in.',
+        data: null,
+        error: 'Unauthorized'
       })
       return
     }
@@ -304,14 +317,15 @@ export const deleteCategory = async (
     if (!category) {
       res.status(404).send({
         statusCode: 404,
-        error: null,
-        message: 'Category not found or does not belong to this user.'
+        message: 'Category not found or does not belong to this user.',
+        data: null,
+        error: 'Not found'
       })
       return
     }
 
     // Delete the category
-    await prisma.category.delete({
+    const deletedCategory = await prisma.category.delete({
       where: {
         id: parsedCategoryId
       }
@@ -320,8 +334,9 @@ export const deleteCategory = async (
     // Return success message
     res.status(200).send({
       statusCode: 200,
-      error: null,
-      message: 'Category deleted successfully.'
+      message: 'Category deleted successfully.',
+      data: deletedCategory,
+      error: null
     })
   } catch (error: Error | any) {
     next(
